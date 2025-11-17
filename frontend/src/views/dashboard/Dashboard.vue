@@ -1,12 +1,16 @@
 <script setup lang="ts" name="DashboardView">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
 import { useAuthStore } from '@/stores/auth';
 import UiTitleCard from '@/components/shared/UiTitleCard.vue';
 import RecentActivity from '@/components/dashboard/RecentActivity.vue';
 import StatsCards from '@/components/dashboard/StatsCards.vue';
+import { usePusher } from '@/composables/usePusher';
+import { useToast } from '@/composables/useToast';
 
 const authStore = useAuthStore();
 const loading = ref(false);
+const { subscribeToUserChannel, disconnect } = usePusher();
+const { success: showToast } = useToast();
 
 const quickActions = [
   {
@@ -36,9 +40,19 @@ onMounted(async () => {
   loading.value = true;
   try {
     await authStore.fetchUser();
+    if (authStore.user) {
+      subscribeToUserChannel(event => {
+        authStore.updateBalance(event.new_balance);
+        showToast('Money Received!', event.message);
+      });
+    }
   } finally {
     loading.value = false;
   }
+});
+
+onUnmounted(() => {
+  disconnect();
 });
 </script>
 
@@ -50,7 +64,7 @@ onMounted(async () => {
         <v-card color="primary" variant="flat">
           <v-card-text class="pa-6">
             <h2 class="text-h4 font-weight-bold text-white mb-2">
-              Welcome back, {{ authStore.user?.name }}! 👋
+              Welcome back, {{ authStore.user?.name }}!
             </h2>
             <p class="text-subtitle-1 text-white opacity-90">
               Your wallet is ready for transactions

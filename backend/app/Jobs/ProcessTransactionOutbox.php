@@ -7,9 +7,9 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
+use App\Events\MoneyReceived;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
-use Pusher\Pusher;
 
 /**
  * Processes outbox entries and broadcasts events to Pusher
@@ -121,8 +121,36 @@ class ProcessTransactionOutbox implements ShouldQueue
                 return;
             }
 
-            // Broadcast to Pusher
-            $this->broadcastEvent($outbox->event_type, $payload);
+            // Load sender for name (needed for receiver notification)
+            $sender = \App\Models\User::find($payload['sender_id']);
+
+            if (! $sender) {
+                throw new \Exception('Sender not found');
+            }
+
+            $amount_formatted = number_format($payload['amount'] / 100, 2);
+
+            // Prepare event data for receiver only (they're the ones who need notification)
+            $event_payload = [
+                'transaction_uuid' => $payload['transaction_uuid'],
+                'amount' => $payload['amount'],
+                'new_balance' => $payload['receiver_balance'],
+                'sender' => [
+                    'id' => $payload['sender_id'],
+                    'name' => $sender->name,
+                    'email' => $sender->email,
+                ],
+                'receiver_id' => $payload['receiver_id'], // Add receiver_id to payload
+                'message' => "You received \${$amount_formatted} from {$sender->name}",
+                'timestamp' => now()->toIso8601String(),
+            ];
+
+            // Dispatch the MoneyReceived event
+            Log::info('Broadcasting MoneyReceived event', [
+                'broadcast_connection' => config('broadcasting.default'),
+                'payload' => $event_payload,
+            ]);
+            \App\Events\MoneyReceived::dispatch($event_payload);
 
             // Mark as processed
             $outbox->update([
@@ -183,70 +211,6 @@ class ProcessTransactionOutbox implements ShouldQueue
         }
 
         return true;
-    }
-
-    /**
-     * Broadcast event to Pusher channels
-     *
-     * Broadcasts to two private channels:
-     * 1. private-user.{sender_id} - Notify sender of debit
-     * 2. private-user.{receiver_id} - Notify receiver of credit
-     *
-     * @throws \Exception
-     */
-    /**
-     * Broadcast event to Pusher channels
-     *
-     * @param  string  $event_type  Event type
-     * @param  array  $payload  Event payload
-     */
-    protected function broadcastEvent(string $event_type, array $payload): void
-    {
-        // Initialize Pusher
-        $pusher = new Pusher(
-            config('broadcasting.connections.pusher.key'),
-            config('broadcasting.connections.pusher.secret'),
-            config('broadcasting.connections.pusher.app_id'),
-            [
-                'cluster' => config('broadcasting.connections.pusher.options.cluster'),
-                'useTLS' => config('broadcasting.connections.pusher.options.useTLS', true),
-            ]
-        );
-
-        // Load sender for name (needed for receiver notification)
-        $sender = \App\Models\User::find($payload['sender_id']);
-
-        if (! $sender) {
-            throw new \Exception('Sender not found');
-        }
-
-        $amount_formatted = number_format($payload['amount'] / 100, 2);
-
-        // Prepare event data for receiver only (they're the ones who need notification)
-        $receiver_data = [
-            'transaction_uuid' => $payload['transaction_uuid'],
-            'amount' => $payload['amount'],
-            'new_balance' => $payload['receiver_balance'],
-            'sender' => [
-                'id' => $payload['sender_id'],
-                'name' => $sender->name,
-                'email' => $sender->email,
-            ],
-            'message' => "You received \${$amount_formatted} from {$sender->name}",
-            'timestamp' => now()->toIso8601String(),
-        ];
-
-        // Broadcast only to receiver's private channel
-        // Sender doesn't need notification (they initiated the action)
-        $receiver_channel = "private-user.{$payload['receiver_id']}";
-        $pusher->trigger($receiver_channel, 'money.received', $receiver_data);
-
-        Log::info('Broadcasted money received notification', [
-            'channel' => $receiver_channel,
-            'transaction_uuid' => $payload['transaction_uuid'],
-            'amount' => $amount_formatted,
-            'sender' => $sender->name,
-        ]);
     }
 
     /**

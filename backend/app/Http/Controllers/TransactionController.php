@@ -42,7 +42,6 @@ class TransactionController extends Controller
             ], 400);
         }
 
-        // Find the receiver using repository
         $receiver = $this->userRepository->findByEmail($email);
 
         if (! $receiver) {
@@ -77,7 +76,6 @@ class TransactionController extends Controller
         $receiverEmail = $request->input('receiver_email');
         $amount = $request->input('amount');
 
-        // Find receiver using repository
         $receiver = $this->userRepository->findByEmail($receiverEmail);
 
         // Get or generate idempotency key
@@ -200,7 +198,6 @@ class TransactionController extends Controller
         $user = Auth::user();
         $stats = $this->transactionRepository->getStatsForUser($user->id);
 
-        // Add additional insights
         $stats['net_balance_change'] = $stats['total_received'] - $stats['total_sent'];
 
         return response()->json([

@@ -116,6 +116,12 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
+  function updateBalance(newBalance: number) {
+    if (user.value) {
+      user.value.balance = newBalance;
+    }
+  }
+
   return {
     // State
     user,
@@ -132,5 +138,6 @@ export const useAuthStore = defineStore('auth', () => {
     logout,
     fetchUser,
     initialize,
+    updateBalance,
   };
 });

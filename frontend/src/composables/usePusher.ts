@@ -15,8 +15,15 @@ window.Pusher = Pusher;
 interface MoneyReceivedEvent {
   transaction_uuid: string;
   amount: number;
-  direction: 'in' | 'out';
   new_balance: number;
+  sender: {
+    id: number;
+    name: string;
+    email: string;
+  };
+  receiver_id: number;
+  message: string;
+  timestamp: string;
 }
 
 interface PusherError {
@@ -55,6 +62,22 @@ export function usePusher() {
         enabledTransports: ['ws', 'wss'],
       });
 
+      echoInstance.connector.pusher.connection.bind('state_change', (states: any) => {
+        console.log('Pusher connection state changed:', states);
+      });
+      echoInstance.connector.pusher.connection.bind('connected', () => {
+        console.log('Pusher connected!');
+        connected.value = true;
+      });
+      echoInstance.connector.pusher.connection.bind('disconnected', () => {
+        console.log('Pusher disconnected!');
+        connected.value = false;
+      });
+      echoInstance.connector.pusher.connection.bind('error', (err: any) => {
+        console.error('Pusher connection error:', err);
+        error.value = err.message || 'Pusher connection error';
+      });
+
       console.log('Pusher Echo initialized', {
         key: import.meta.env.VITE_PUSHER_APP_KEY,
         cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER,
@@ -90,6 +113,14 @@ export function usePusher() {
       .error((error: PusherError) => {
         console.error('Channel error:', error);
       });
+
+    channel.subscribed(() => {
+      console.log(`Successfully subscribed to channel: ${channelName}`);
+    });
+    channel.error((error: PusherError) => {
+      console.error(`Channel error on ${channelName}:`, error);
+      // Optionally update a reactive error state here
+    });
 
     return channel;
   };
