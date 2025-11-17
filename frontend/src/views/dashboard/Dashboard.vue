@@ -1,12 +1,12 @@
-<script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import { useAuthStore } from '@/stores/auth'
-import UiTitleCard from '@/components/shared/UiTitleCard.vue'
-import RecentActivity from '@/components/dashboard/RecentActivity.vue'
-import StatsCards from '@/components/dashboard/StatsCards.vue'
+<script setup lang="ts" name="DashboardView">
+import { ref, onMounted } from 'vue';
+import { useAuthStore } from '@/stores/auth';
+import UiTitleCard from '@/components/shared/UiTitleCard.vue';
+import RecentActivity from '@/components/dashboard/RecentActivity.vue';
+import StatsCards from '@/components/dashboard/StatsCards.vue';
 
-const authStore = useAuthStore()
-const loading = ref(false)
+const authStore = useAuthStore();
+const loading = ref(false);
 
 const quickActions = [
   {
@@ -14,32 +14,32 @@ const quickActions = [
     subtitle: 'Transfer to another user',
     icon: 'mdi-send',
     color: 'primary',
-    to: '/transfer'
+    to: '/transfer',
   },
   {
     title: 'Transaction History',
     subtitle: 'View all transactions',
     icon: 'mdi-history',
     color: 'secondary',
-    to: '/transactions'
+    to: '/transactions',
   },
   {
     title: 'Account Settings',
     subtitle: 'Manage your account',
     icon: 'mdi-cog',
     color: 'info',
-    to: '/#'
-  }
-]
+    to: '/#',
+  },
+];
 
 onMounted(async () => {
-  loading.value = true
+  loading.value = true;
   try {
-    await authStore.fetchUser()
+    await authStore.fetchUser();
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-})
+});
 </script>
 
 <template>
@@ -66,22 +66,15 @@ onMounted(async () => {
         <UiTitleCard title="Current Balance">
           <v-card flat color="gray100">
             <v-card-text class="text-center pa-8">
-              <v-icon size="48" color="primary" class="mb-4">
-                mdi-wallet
-              </v-icon>
+              <v-icon size="48" color="primary" class="mb-4"> mdi-wallet </v-icon>
               <h1 class="text-h2 font-weight-bold text-primary mb-2">
                 ${{ authStore.currentBalanceInDollars.toFixed(2) }}
               </h1>
               <p class="text-subtitle-2 text-medium-emphasis">
                 {{ authStore.currentBalance }} cents
               </p>
-              
-              <v-chip
-                color="success"
-                variant="flat"
-                prepend-icon="mdi-check-circle"
-                class="mt-4"
-              >
+
+              <v-chip color="success" variant="flat" prepend-icon="mdi-check-circle" class="mt-4">
                 Account Active
               </v-chip>
             </v-card-text>
@@ -100,23 +93,9 @@ onMounted(async () => {
       <v-col cols="12">
         <UiTitleCard title="Quick Actions">
           <v-row>
-            <v-col
-              v-for="action in quickActions"
-              :key="action.title"
-              cols="12"
-              sm="6"
-              md="4"
-            >
-              <v-card
-                :to="action.to"
-                hover
-                class="text-center pa-4"
-              >
-                <v-avatar
-                  :color="action.color"
-                  size="64"
-                  class="mb-4"
-                >
+            <v-col v-for="action in quickActions" :key="action.title" cols="12" sm="6" md="4">
+              <v-card :to="action.to" hover class="text-center pa-4">
+                <v-avatar :color="action.color" size="64" class="mb-4">
                   <v-icon size="32" color="white">
                     {{ action.icon }}
                   </v-icon>

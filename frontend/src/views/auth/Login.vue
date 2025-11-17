@@ -1,42 +1,42 @@
-<script setup lang="ts">
-import { reactive, ref } from 'vue'
-import { useRouter } from 'vue-router'
-import { useAuthStore } from '@/stores/auth'
-import Logo from '@/components/shared/Logo.vue'
+<script setup lang="ts" name="AuthLogin">
+import { reactive, ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { useAuthStore } from '@/stores/auth';
+import Logo from '@/components/shared/Logo.vue';
 
-const router = useRouter()
-const authStore = useAuthStore()
+const router = useRouter();
+const authStore = useAuthStore();
 
 const form = reactive({
   email: '',
   password: '',
-  rememberMe: false
-})
+  rememberMe: false,
+});
 
-const showPassword = ref(false)
-const valid = ref(false)
+const showPassword = ref(false);
+const valid = ref(false);
 
 const emailRules = [
   (v: string) => !!v || 'Email is required',
-  (v: string) => /.+@.+\..+/.test(v) || 'Email must be valid'
-]
+  (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) || 'Email must be valid',
+];
 
 const passwordRules = [
   (v: string) => !!v || 'Password is required',
-  (v: string) => v.length >= 8 || 'Password must be at least 8 characters'
-]
+  (v: string) => v.length >= 8 || 'Password must be at least 8 characters',
+];
 
 async function handleSubmit() {
-  if (!valid.value) return
+  if (!valid.value) return;
 
   try {
     await authStore.login({
       email: form.email,
-      password: form.password
-    })
-    router.push('/dashboard')
+      password: form.password,
+    });
+    router.push('/dashboard');
   } catch (error) {
-    console.error('Login error:', error)
+    console.error('Login error:', error);
   }
 }
 </script>
@@ -55,9 +55,7 @@ async function handleSubmit() {
             <!-- Title -->
             <div class="text-center mb-6">
               <h2 class="text-h4 font-weight-bold mb-2">Welcome Back</h2>
-              <p class="text-subtitle-1 text-medium-emphasis">
-                Sign in to access your wallet
-              </p>
+              <p class="text-subtitle-1 text-medium-emphasis">Sign in to access your wallet</p>
             </div>
 
             <!-- Error Alert -->
@@ -103,10 +101,7 @@ async function handleSubmit() {
                   hide-details
                   density="compact"
                 />
-                <router-link
-                  to="/forgot-password"
-                  class="text-primary text-decoration-none"
-                >
+                <router-link to="/forgot-password" class="text-primary text-decoration-none">
                   Forgot Password?
                 </router-link>
               </div>
@@ -136,7 +131,6 @@ async function handleSubmit() {
               </div>
             </v-form>
           </v-card>
-          
         </v-col>
       </v-row>
     </v-container>
@@ -146,6 +140,10 @@ async function handleSubmit() {
 <style scoped lang="scss">
 .auth-wrapper {
   min-height: 100vh;
-  background: linear-gradient(135deg, rgb(var(--v-theme-lightprimary)) 0%, rgb(var(--v-theme-lightsecondary)) 100%);
+  background: linear-gradient(
+    135deg,
+    rgb(var(--v-theme-lightprimary)) 0%,
+    rgb(var(--v-theme-lightsecondary)) 100%
+  );
 }
 </style>

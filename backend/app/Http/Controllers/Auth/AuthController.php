@@ -15,7 +15,7 @@ class AuthController extends Controller
     /**
      * AuthController constructor.
      *
-     * @param AuthService $auth_service Auth service instance
+     * @param  AuthService  $auth_service  Auth service instance
      */
     public function __construct(
         private AuthService $auth_service
@@ -25,8 +25,7 @@ class AuthController extends Controller
     /**
      * Register a new user.
      *
-     * @param RegisterRequest $request The registration request
-     * @return JsonResponse
+     * @param  RegisterRequest  $request  The registration request
      */
     public function register(RegisterRequest $request): JsonResponse
     {
@@ -51,8 +50,7 @@ class AuthController extends Controller
     /**
      * Login user and create token.
      *
-     * @param LoginRequest $request The login request
-     * @return JsonResponse
+     * @param  LoginRequest  $request  The login request
      */
     public function login(LoginRequest $request): JsonResponse
     {
@@ -82,8 +80,7 @@ class AuthController extends Controller
     /**
      * Logout user (revoke token).
      *
-     * @param Request $request The logout request
-     * @return JsonResponse
+     * @param  Request  $request  The logout request
      */
     public function logout(Request $request): JsonResponse
     {
@@ -97,8 +94,7 @@ class AuthController extends Controller
     /**
      * Get authenticated user.
      *
-     * @param Request $request The authenticated user request
-     * @return JsonResponse
+     * @param  Request  $request  The authenticated user request
      */
     public function user(Request $request): JsonResponse
     {

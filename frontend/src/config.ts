@@ -6,15 +6,15 @@ export type ConfigProps = {
 };
 
 const config: ConfigProps = {
-    Sidebar_drawer: true,
-    Customizer_drawer: false,
-    mini_sidebar: false,
-    setHorizontalLayout: false,
-    actTheme: 'MINI_WALLET',
-    fontTheme: 'Roboto 2',
-    inputBg: false,
-    boxed: false,
-    isRtl: false
-};              
+  Sidebar_drawer: true,
+  Customizer_drawer: false,
+  mini_sidebar: false,
+  setHorizontalLayout: false,
+  actTheme: 'MINI_WALLET',
+  fontTheme: 'Roboto 2',
+  inputBg: false,
+  boxed: false,
+  isRtl: false,
+};
 
 export default config;

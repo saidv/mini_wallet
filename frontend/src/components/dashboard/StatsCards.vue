@@ -1,42 +1,42 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import { transactionsApi } from '@/api/transactions'
+import { ref, onMounted } from 'vue';
+import { transactionsApi } from '@/api/transactions';
 
-const loading = ref(false)
+const loading = ref(false);
 const stats = ref({
   totalReceived: 0,
   totalSent: 0,
   totalTransactions: 0,
-  totalCommission: 0
-})
+  totalCommission: 0,
+});
 
 const formatCurrency = (cents: number): string => {
-  return `$${(cents / 100).toFixed(2)}`
-}
+  return `$${(cents / 100).toFixed(2)}`;
+};
 
 const loadStats = async () => {
-  loading.value = true
+  loading.value = true;
   try {
-    const data = await transactionsApi.getStats()
+    const data = await transactionsApi.getStats();
 
     stats.value = {
       totalReceived: data.total_received,
       totalSent: data.total_sent,
       totalTransactions: data.total_transactions,
-      totalCommission: data.total_commission
-    }
+      totalCommission: data.total_commission,
+    };
   } catch (error) {
-    console.error('Error loading stats:', error)
+    console.error('Error loading stats:', error);
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-}
+};
 
 onMounted(() => {
-  loadStats()
-})
+  loadStats();
+});
 
-defineExpose({ loadStats })
+defineExpose({ loadStats });
 </script>
 
 <template>

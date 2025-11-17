@@ -111,6 +111,7 @@ class ProcessTransactionOutbox implements ShouldQueue
                 $payload = json_decode($payload, true);
                 if (json_last_error() !== JSON_ERROR_NONE) {
                     $this->markAsFailed($outbox, 'Invalid JSON payload');
+
                     return;
                 }
             }
@@ -155,8 +156,7 @@ class ProcessTransactionOutbox implements ShouldQueue
     /**
      * Validate the outbox payload structure
      *
-     * @param array $payload Payload array to validate
-     * @return bool
+     * @param  array  $payload  Payload array to validate
      */
     protected function validatePayload(array $payload): bool
     {
@@ -197,9 +197,8 @@ class ProcessTransactionOutbox implements ShouldQueue
     /**
      * Broadcast event to Pusher channels
      *
-     * @param string $event_type Event type
-     * @param array $payload Event payload
-     * @return void
+     * @param  string  $event_type  Event type
+     * @param  array  $payload  Event payload
      */
     protected function broadcastEvent(string $event_type, array $payload): void
     {
@@ -253,9 +252,8 @@ class ProcessTransactionOutbox implements ShouldQueue
     /**
      * Mark the outbox entry as failed
      *
-     * @param TransactionOutbox $outbox Outbox entry instance
-     * @param string $reason Failure reason
-     * @return void
+     * @param  TransactionOutbox  $outbox  Outbox entry instance
+     * @param  string  $reason  Failure reason
      */
     protected function markAsFailed(TransactionOutbox $outbox, string $reason): void
     {
@@ -277,8 +275,7 @@ class ProcessTransactionOutbox implements ShouldQueue
      * Called after all retry attempts have been exhausted.
      * Marks the outbox entry as permanently failed.
      *
-     * @param \Throwable $exception Exception that caused the failure
-     * @return void
+     * @param  \Throwable  $exception  Exception that caused the failure
      */
     public function failed(\Throwable $exception): void
     {

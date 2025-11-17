@@ -1,4 +1,4 @@
-import type { ThemeDefinition } from 'vuetify'
+import type { ThemeDefinition } from 'vuetify';
 
 export const PrimaryColor = '#9dc1f4ff';
 export const PrimaryDarkColor = '#6397ebff';
@@ -14,14 +14,15 @@ const MINI_WALLET: ThemeDefinition = {
       'linear-gradient(250.38deg, rgba(var(--v-theme-primary), var(--v-shadow-opacity)) 2.39%, rgba(var(--v-theme-primary), var(--v-half-opacity)) 34.42%, rgb(var(--v-theme-primary)) 60.95%, rgba(var(--v-theme-darkprimary), var(--v-medium-opacity)) 84.83%, rgb(var(--v-theme-darkprimary)) 104.37%)',
     gradientRtl:
       'linear-gradient(250.38deg, rgb(var(--v-theme-darkprimary)) 2.39%, rgba(var(--v-theme-darkprimary), var(--v-medium-opacity)) 34.42%, rgb(var(--v-theme-primary)) 60.95%, rgba(var(--v-theme-primary), var(--v-half-opacity)) 84.83%, rgba(var(--v-theme-primary), var(--v-shadow-opacity)) 104.37%)',
-    gradient2: 'linear-gradient(to right, rgb(var(--v-theme-darkprimary)), rgb(var(--v-theme-primary)))',
+    gradient2:
+      'linear-gradient(to right, rgb(var(--v-theme-darkprimary)), rgb(var(--v-theme-primary)))',
     'card-shadow': '0px 1px 4px rgba(0, 0, 0, 0.08)',
     'gradient-opacity': 0.2,
     'medium-opacity': 0.85,
     'chart-opacity': 0.6,
     'half-opacity': 0.5,
     'high-opacity': 1,
-    'shadow-opacity': 0.08
+    'shadow-opacity': 0.08,
   },
   colors: {
     primary: PrimaryColor,
@@ -48,8 +49,8 @@ const MINI_WALLET: ThemeDefinition = {
     'surface-light': '#fff',
     gray100: '#f5f5f5',
     primary200: '#a1d2ff',
-    secondary200: '#eeeeee'
-  }
+    secondary200: '#eeeeee',
+  },
 };
 
-export { MINI_WALLET}
+export { MINI_WALLET };

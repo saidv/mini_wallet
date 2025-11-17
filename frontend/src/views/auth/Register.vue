@@ -1,63 +1,74 @@
-<script setup lang="ts">
-import { reactive, ref } from 'vue'
-import { useRouter } from 'vue-router'
-import { useAuthStore } from '@/stores/auth'
-import Logo from '@/components/shared/Logo.vue'
+<script setup lang="ts" name="AuthRegister">
+import { reactive, ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { useAuthStore } from '@/stores/auth';
+import Logo from '@/components/shared/Logo.vue';
 
-const router = useRouter()
-const authStore = useAuthStore()
+interface AxiosError {
+  response?: {
+    data?: {
+      errors?: Record<string, string[]>;
+    };
+  };
+}
+
+const router = useRouter();
+const authStore = useAuthStore();
 
 const form = reactive({
   name: '',
   email: '',
   password: '',
-  password_confirmation: ''
-})
+  password_confirmation: '',
+});
 
-const showPassword = ref(false)
-const showPasswordConfirm = ref(false)
-const valid = ref(false)
-const validationErrors = ref<string[]>([])
+const showPassword = ref(false);
+const showPasswordConfirm = ref(false);
+const valid = ref(false);
+const validationErrors = ref<string[]>([]);
 
 const nameRules = [
   (v: string) => !!v || 'Name is required',
-  (v: string) => v.length >= 2 || 'Name must be at least 2 characters'
-]
+  (v: string) => v.length >= 2 || 'Name must be at least 2 characters',
+];
 
 const emailRules = [
   (v: string) => !!v || 'Email is required',
-  (v: string) => /.+@.+\..+/.test(v) || 'Email must be valid'
-]
+  (v: string) => /.+@.+\..+/.test(v) || 'Email must be valid',
+];
 
 const passwordRules = [
   (v: string) => !!v || 'Password is required',
-  (v: string) => v.length >= 8 || 'Password must be at least 8 characters'
-]
+  (v: string) => v.length >= 8 || 'Password must be at least 8 characters',
+];
 
 const confirmPasswordRules = [
   (v: string) => !!v || 'Please confirm your password',
-  (v: string) => v === form.password || 'Passwords do not match'
-]
+  (v: string) => v === form.password || 'Passwords do not match',
+];
 
 async function handleSubmit() {
-  if (!valid.value) return
-  
-  validationErrors.value = []
+  if (!valid.value) return;
+
+  validationErrors.value = [];
 
   try {
     await authStore.register({
       name: form.name,
       email: form.email,
       password: form.password,
-      password_confirmation: form.password_confirmation
-    })
-    router.push('/dashboard')
-  } catch (error: any) {
-    if (error.response?.data?.errors) {
-      const errors = error.response.data.errors
-      validationErrors.value = Object.values(errors).flat() as string[]
+      password_confirmation: form.password_confirmation,
+    });
+    router.push('/dashboard');
+  } catch (error: unknown) {
+    if (error instanceof Error && 'response' in error) {
+      const axiosError = error as AxiosError;
+      if (axiosError.response?.data?.errors) {
+        const errors = axiosError.response.data.errors;
+        validationErrors.value = Object.values(errors).flat() as string[];
+      }
     }
-    console.error('Registration error:', error)
+    console.error('Registration error:', error);
   }
 }
 </script>
@@ -68,12 +79,7 @@ async function handleSubmit() {
       <v-row justify="center">
         <v-col cols="12" sm="10" md="8" lg="6" xl="4">
           <!-- Back Button -->
-          <v-btn
-            to="/"
-            variant="text"
-            prepend-icon="mdi-arrow-left"
-            class="mb-4"
-          >
+          <v-btn to="/" variant="text" prepend-icon="mdi-arrow-left" class="mb-4">
             Back to Home
           </v-btn>
 
@@ -86,9 +92,7 @@ async function handleSubmit() {
             <!-- Title -->
             <div class="text-center mb-6">
               <h2 class="text-h4 font-weight-bold mb-2">Create Account</h2>
-              <p class="text-subtitle-1 text-medium-emphasis">
-                Start your wallet journey today
-              </p>
+              <p class="text-subtitle-1 text-medium-emphasis">Start your wallet journey today</p>
             </div>
 
             <!-- Error Alert -->
@@ -104,12 +108,7 @@ async function handleSubmit() {
             </v-alert>
 
             <!-- Validation Errors -->
-            <v-alert
-              v-if="validationErrors.length > 0"
-              type="error"
-              variant="tonal"
-              class="mb-4"
-            >
+            <v-alert v-if="validationErrors.length > 0" type="error" variant="tonal" class="mb-4">
               <ul class="pl-4">
                 <li v-for="error in validationErrors" :key="error">
                   {{ error }}
@@ -196,6 +195,10 @@ async function handleSubmit() {
 <style scoped lang="scss">
 .auth-wrapper {
   min-height: 100vh;
-  background: linear-gradient(135deg, rgb(var(--v-theme-lightprimary)) 0%, rgb(var(--v-theme-lightsecondary)) 100%);
+  background: linear-gradient(
+    135deg,
+    rgb(var(--v-theme-lightprimary)) 0%,
+    rgb(var(--v-theme-lightsecondary)) 100%
+  );
 }
 </style>

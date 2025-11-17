@@ -21,15 +21,19 @@ body {
 
 // Card styles
 .v-card {
-  box-shadow: 0 0 #0000, 0 0 #0000, 0 1px 3px 0 rgba(0,0,0,.1), 0 1px 2px -1px rgba(0,0,0,.1);
-  
+  box-shadow:
+    0 0 #0000,
+    0 0 #0000,
+    0 1px 3px 0 rgba(0, 0, 0, 0.1),
+    0 1px 2px -1px rgba(0, 0, 0, 0.1);
+
   &.title-card {
     box-shadow: none;
-    
+
     .v-card-item {
       padding: 0;
     }
-    
+
     .v-card-title {
       font-size: 1.25rem;
       font-weight: 600;
@@ -48,16 +52,15 @@ body {
 // Input styles
 .v-field {
   border-radius: 7px;
-  
+
   &__outline {
     color: rgb(var(--v-theme-inputBorder));
   }
 }
 
-.space-around{
+.space-around {
   justify-content: space-around;
 }
-
 
 // Remove number input arrows
 input[type='number']::-webkit-inner-spin-button,
@@ -82,7 +85,7 @@ input[type='number'] {
 .bordered-table {
   border-collapse: separate;
   border-spacing: 0;
-  
+
   thead {
     tr {
       th {
@@ -91,20 +94,20 @@ input[type='number'] {
       }
     }
   }
-  
+
   tbody {
     tr {
       transition: background-color 0.2s ease;
-      
+
       td {
         padding: 12px 16px;
         border-bottom: 1px solid rgba(var(--v-border-color), var(--v-border-opacity));
       }
-      
+
       &:hover {
         background-color: rgba(var(--v-theme-primary), 0.05);
       }
-      
+
       &:last-child {
         td {
           border-bottom: none;

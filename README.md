@@ -145,6 +145,34 @@ MiniWallet/
 
 ---
 
+## 🔍 Code Quality & Standards
+
+![Code Quality Scans](codeQualityScans.png)
+
+*Automated code quality checks ensure high standards across the entire codebase*
+
+### Frontend Quality Checks
+- **ESLint**: Code linting with Vue 3, TypeScript, and SonarJS rules
+- **Prettier**: Consistent code formatting
+- **TypeScript**: Type checking with `vue-tsc`
+- **Depcheck**: Unused dependency detection
+
+### Backend Quality Checks
+- **PHPStan**: Static analysis for PHP code quality
+- **PHP CodeSniffer (PHPCS)**: PSR-12 coding standards enforcement
+- **Laravel Pint**: Code formatting for PHP
+
+**Run all quality checks:**
+```bash
+# Frontend
+cd frontend && pnpm run lint && pnpm run format:check && pnpm run type-check
+
+# Backend  
+cd backend && vendor/bin/phpstan analyse app/ && vendor/bin/phpcs app/
+```
+
+---
+
 ## How the Backend Works
 
 MiniWallet is designed for safety, speed, and transparency. Here’s how:

@@ -1,33 +1,45 @@
-import { ref, onMounted, onUnmounted } from 'vue'
-import Echo from 'laravel-echo'
-import Pusher from 'pusher-js'
-import { useAuthStore } from '@/stores/auth'
-import apiClient from '@/api/client'
+import { ref } from 'vue';
+import Echo from 'laravel-echo';
+import Pusher from 'pusher-js';
+import { useAuthStore } from '@/stores/auth';
 
 // Declare Pusher on window
 declare global {
   interface Window {
-    Pusher: typeof Pusher
+    Pusher: typeof Pusher;
   }
 }
 
-window.Pusher = Pusher
+window.Pusher = Pusher;
 
-let echoInstance: Echo | null = null
+interface MoneyReceivedEvent {
+  transaction_uuid: string;
+  amount: number;
+  direction: 'in' | 'out';
+  new_balance: number;
+}
+
+interface PusherError {
+  type: string;
+  error: string;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+let echoInstance: any = null;
 
 export function usePusher() {
-  const authStore = useAuthStore()
-  const connected = ref(false)
-  const error = ref<string | null>(null)
+  const authStore = useAuthStore();
+  const connected = ref(false);
+  const error = ref<string | null>(null);
 
   const initializeEcho = () => {
     if (echoInstance) {
-      return echoInstance
+      return echoInstance;
     }
 
     try {
-      const token = localStorage.getItem('auth_token')
-      
+      const token = localStorage.getItem('auth_token');
+
       echoInstance = new Echo({
         broadcaster: 'pusher',
         key: import.meta.env.VITE_PUSHER_APP_KEY,
@@ -38,62 +50,64 @@ export function usePusher() {
         auth: {
           headers: {
             Authorization: `Bearer ${token}`,
-          }
+          },
         },
-        enabledTransports: ['ws', 'wss']
-      })
+        enabledTransports: ['ws', 'wss'],
+      });
 
       console.log('Pusher Echo initialized', {
         key: import.meta.env.VITE_PUSHER_APP_KEY,
         cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER,
-      })
-    } catch (err: any) {
-      error.value = err.message
-      console.error('Pusher initialization failed:', err)
+      });
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Pusher initialization failed';
+      error.value = errorMessage;
+      console.error('Pusher initialization failed:', err);
     }
 
-    return echoInstance
-  }
+    return echoInstance;
+  };
 
-  const subscribeToUserChannel = (callback: (event: any) => void) => {
+  const subscribeToUserChannel = (callback: (event: MoneyReceivedEvent) => void) => {
     if (!authStore.user?.id) {
-      console.warn('Cannot subscribe: User not authenticated')
-      return null
+      console.warn('Cannot subscribe: User not authenticated');
+      return null;
     }
 
-    const echo = initializeEcho()
-    if (!echo) return null
+    const echo = initializeEcho();
+    if (!echo) return null;
 
-    const channelName = `user.${authStore.user.id}`
-    
-    console.log(`Subscribing to private channel: ${channelName}`)
+    const channelName = `user.${authStore.user.id}`;
 
-    const channel = echo.private(channelName)
-      .listen('money.received', (event: any) => {
-        console.log('Money received event:', event)
-        callback(event)
+    console.log(`Subscribing to private channel: ${channelName}`);
+
+    const channel = echo
+      .private(channelName)
+      .listen('money.received', (event: MoneyReceivedEvent) => {
+        console.log('Money received event:', event);
+        callback(event);
       })
-      .error((error: any) => {
-        console.error('Channel error:', error)
-      })
+      .error((error: PusherError) => {
+        console.error('Channel error:', error);
+      });
 
-    return channel
-  }
+    return channel;
+  };
 
   const disconnect = () => {
     if (echoInstance) {
-      echoInstance.disconnect()
-      echoInstance = null
-      connected.value = false
-      console.log('🔌 Pusher disconnected')
+      echoInstance.disconnect();
+      echoInstance = null;
+      connected.value = false;
+      console.log('🔌 Pusher disconnected');
     }
-  }
+  };
 
   return {
     connected,
     error,
     initializeEcho,
     subscribeToUserChannel,
-    disconnect
-  }
+    disconnect,
+  };
 }

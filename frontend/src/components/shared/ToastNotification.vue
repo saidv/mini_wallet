@@ -1,27 +1,37 @@
 <script setup lang="ts">
-import { useToast } from '@/composables/useToast'
+import { useToast } from '@/composables/useToast';
 
-const { toasts, remove } = useToast()
+const { toasts, remove } = useToast();
 
 const getIcon = (type: string) => {
   switch (type) {
-    case 'success': return 'mdi-check-circle'
-    case 'error': return 'mdi-alert-circle'
-    case 'warning': return 'mdi-alert'
-    case 'info': return 'mdi-information'
-    default: return 'mdi-information'
+    case 'success':
+      return 'mdi-check-circle';
+    case 'error':
+      return 'mdi-alert-circle';
+    case 'warning':
+      return 'mdi-alert';
+    case 'info':
+      return 'mdi-information';
+    default:
+      return 'mdi-information';
   }
-}
+};
 
 const getColor = (type: string) => {
   switch (type) {
-    case 'success': return 'success'
-    case 'error': return 'error'
-    case 'warning': return 'warning'
-    case 'info': return 'info'
-    default: return 'info'
+    case 'success':
+      return 'success';
+    case 'error':
+      return 'error';
+    case 'warning':
+      return 'warning';
+    case 'info':
+      return 'info';
+    default:
+      return 'info';
   }
-}
+};
 </script>
 
 <template>

@@ -1,79 +1,84 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
-import { RouterView, useRouter } from 'vue-router'
-import { useAuthStore } from '@/stores/auth'
-import { usePusher } from '@/composables/usePusher'
-import { useToast } from '@/composables/useToast'
-import Logo from '@/components/shared/Logo.vue'
+import { ref, onMounted, onUnmounted } from 'vue';
+import { RouterView, useRouter } from 'vue-router';
+import { useAuthStore } from '@/stores/auth';
+import { usePusher } from '@/composables/usePusher';
+import { useToast } from '@/composables/useToast';
+import Logo from '@/components/shared/Logo.vue';
 
-const router = useRouter()
-const authStore = useAuthStore()
-const { subscribeToUserChannel, disconnect } = usePusher()
-const { success } = useToast()
+interface MoneyReceivedEvent {
+  transaction_uuid: string;
+  amount: number;
+  direction: 'in' | 'out';
+  new_balance: number;
+  message?: string;
+  sender?: {
+    name: string;
+  };
+}
 
-const drawer = ref(true)
-const rail = ref(false)
+const router = useRouter();
+const authStore = useAuthStore();
+const { subscribeToUserChannel, disconnect } = usePusher();
+const { success } = useToast();
+
+const drawer = ref(true);
+const rail = ref(false);
 
 const menuItems = [
   {
     title: 'Dashboard',
     icon: 'mdi-view-dashboard',
     to: '/dashboard',
-    exact: true
+    exact: true,
   },
   {
     title: 'Send Money',
     icon: 'mdi-send',
-    to: '/transfer'
+    to: '/transfer',
   },
   {
     title: 'Transactions',
     icon: 'mdi-history',
-    to: '/transactions'
-  }
-]
+    to: '/transactions',
+  },
+];
 
 async function handleLogout() {
-  await authStore.logout()
-  router.push('/')
+  await authStore.logout();
+  router.push('/');
 }
 
 // Subscribe to Pusher on mount
 onMounted(() => {
-  subscribeToUserChannel((event: any) => {
-    console.log('💰 Money received event:', event)
-    
+  subscribeToUserChannel((event: MoneyReceivedEvent) => {
+    console.log('💰 Money received event:', event);
+
     // Update balance in store
     if (event.new_balance !== undefined) {
-      authStore.user!.balance = event.new_balance
+      authStore.user!.balance = event.new_balance;
     }
 
     // Show success notification (only receivers get notifications)
     success(
       'Money Received! 💰',
       event.message || `You received $${(event.amount / 100).toFixed(2)} from ${event.sender?.name}`
-    )
+    );
 
     // Trigger transaction list refresh
-    window.dispatchEvent(new CustomEvent('transaction-updated'))
-  })
-})
+    window.dispatchEvent(new CustomEvent('transaction-updated'));
+  });
+});
 
 onUnmounted(() => {
-  disconnect()
-})
+  disconnect();
+});
 </script>
 
 <template>
   <v-app>
     <!-- Navigation Drawer -->
-    <v-navigation-drawer
-      v-model="drawer"
-      :rail="rail"
-      permanent
-      color="surface"
-      class="border-e"
-    >
+    <v-navigation-drawer v-model="drawer" :rail="rail" permanent color="surface" class="border-e">
       <template #prepend>
         <div class="pa-4">
           <Logo :size="rail ? 'small' : 'default'" />
@@ -112,7 +117,7 @@ onUnmounted(() => {
     <!-- App Bar -->
     <v-app-bar elevation="0" class="border-b">
       <v-app-bar-nav-icon @click="rail = !rail" />
-      
+
       <v-app-bar-title>
         <span class="text-subtitle-1 font-weight-medium">
           {{ $route.meta.title || 'Dashboard' }}
@@ -129,9 +134,7 @@ onUnmounted(() => {
         prepend-icon="mdi-wallet"
         class="mr-4"
       >
-        <span class="font-weight-bold">
-          ${{ authStore.currentBalanceInDollars.toFixed(2) }}
-        </span>
+        <span class="font-weight-bold"> ${{ authStore.currentBalanceInDollars.toFixed(2) }} </span>
       </v-chip>
 
       <!-- User Menu -->
@@ -155,9 +158,9 @@ onUnmounted(() => {
               {{ authStore.user?.email }}
             </v-list-item-subtitle>
           </v-list-item>
-          
+
           <v-divider />
-          
+
           <v-list-item @click="handleLogout">
             <template #prepend>
               <v-icon>mdi-logout</v-icon>
@@ -189,7 +192,7 @@ onUnmounted(() => {
 .v-list-item {
   &.v-list-item--active {
     background: rgb(var(--v-theme-lightprimary));
-    
+
     .v-icon,
     .v-list-item-title {
       color: rgb(var(--v-theme-primary));

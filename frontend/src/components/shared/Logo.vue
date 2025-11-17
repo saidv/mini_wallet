@@ -1,10 +1,10 @@
-<script setup lang="ts">
+<script setup lang="ts" name="AppLogo">
 defineProps({
   size: {
     type: String,
-    default: 'default'
-  }
-})
+    default: 'default',
+  },
+});
 </script>
 
 <template>
@@ -21,36 +21,40 @@ defineProps({
   display: flex;
   align-items: center;
   gap: 12px;
-  
+
   &-icon {
     font-size: 32px;
     line-height: 1;
   }
-  
+
   &-text {
     font-size: 24px;
     font-weight: 700;
-    background: linear-gradient(135deg, rgb(var(--v-theme-primary)) 0%, rgb(var(--v-theme-secondary)) 100%);
+    background: linear-gradient(
+      135deg,
+      rgb(var(--v-theme-primary)) 0%,
+      rgb(var(--v-theme-secondary)) 100%
+    );
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
-  
+
   &--small {
     .logo-icon {
       font-size: 24px;
     }
-    
+
     .logo-text {
       font-size: 18px;
     }
   }
-  
+
   &--large {
     .logo-icon {
       font-size: 48px;
     }
-    
+
     .logo-text {
       font-size: 32px;
     }

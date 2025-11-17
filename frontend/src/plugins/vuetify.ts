@@ -1,8 +1,8 @@
-import { createVuetify } from 'vuetify'
-import '@mdi/font/css/materialdesignicons.css'
-import * as components from 'vuetify/components'
-import * as directives from 'vuetify/directives'
-import { MINI_WALLET } from '@/theme/LightTheme'
+import { createVuetify } from 'vuetify';
+import '@mdi/font/css/materialdesignicons.css';
+import * as components from 'vuetify/components';
+import * as directives from 'vuetify/directives';
+import { MINI_WALLET } from '@/theme/LightTheme';
 
 export default createVuetify({
   components,
@@ -11,13 +11,13 @@ export default createVuetify({
     defaultTheme: 'MINI_WALLET',
     themes: {
       MINI_WALLET,
-    }
+    },
   },
   defaults: {
     VBtn: {
       rounded: 'md',
       elevation: 0,
-      color: 'primary'
+      color: 'primary',
     },
     VCard: {
       rounded: 'md',
@@ -42,8 +42,6 @@ export default createVuetify({
     },
     VTooltip: {
       location: 'top',
-    }
-  }
-})
-
-
+    },
+  },
+});

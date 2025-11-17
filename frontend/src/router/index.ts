@@ -1,7 +1,7 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import { useAuthStore } from '@/stores/auth'
-import BlankLayout from '@/layouts/blank/BlankLayout.vue'
-import DashboardLayout from '@/layouts/dashboard/DashboardLayout.vue'
+import { createRouter, createWebHistory } from 'vue-router';
+import { useAuthStore } from '@/stores/auth';
+import BlankLayout from '@/layouts/blank/BlankLayout.vue';
+import DashboardLayout from '@/layouts/dashboard/DashboardLayout.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -26,7 +26,7 @@ const router = createRouter({
           name: 'forgot-password',
           component: () => import('@/views/auth/ForgotPassword.vue'),
         },
-      ]
+      ],
     },
     {
       path: '/dashboard',
@@ -37,9 +37,9 @@ const router = createRouter({
           path: '',
           name: 'dashboard',
           component: () => import('@/views/dashboard/Dashboard.vue'),
-          meta: { title: 'Dashboard' }
+          meta: { title: 'Dashboard' },
         },
-      ]
+      ],
     },
     {
       path: '/transfer',
@@ -50,9 +50,9 @@ const router = createRouter({
           path: '',
           name: 'transfer',
           component: () => import('@/views/transfer/Transfer.vue'),
-          meta: { title: 'Send Money' }
+          meta: { title: 'Send Money' },
         },
-      ]
+      ],
     },
     {
       path: '/transactions',
@@ -63,31 +63,31 @@ const router = createRouter({
           path: '',
           name: 'transactions',
           component: () => import('@/views/transactions/Transactions.vue'),
-          meta: { title: 'Transaction History' }
+          meta: { title: 'Transaction History' },
         },
-      ]
+      ],
     },
   ],
-})
+});
 
 router.beforeEach(async (to, from, next) => {
-  const authStore = useAuthStore()
+  const authStore = useAuthStore();
 
   // Wait for auth initialization if token exists but user not loaded
   if (!authStore.user && authStore.token) {
-    await authStore.initialize()
+    await authStore.initialize();
   }
 
-  const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
-  const requiresGuest = to.matched.some(record => record.meta.requiresGuest)
+  const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
+  const requiresGuest = to.matched.some(record => record.meta.requiresGuest);
 
   if (requiresAuth && !authStore.isAuthenticated) {
-    next({ name: 'login' })
+    next({ name: 'login' });
   } else if (requiresGuest && authStore.isAuthenticated) {
-    next({ name: 'dashboard' })
+    next({ name: 'dashboard' });
   } else {
-    next()
+    next();
   }
-})
+});
 
-export default router
+export default router;

@@ -1,20 +1,19 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import Logo from '@/components/shared/Logo.vue'
+import { ref } from 'vue';
+import Logo from '@/components/shared/Logo.vue';
 
-const email = ref('')
-const isLoading = ref(false)
-const emailSent = ref(false)
+const email = ref('');
+const isLoading = ref(false);
+const emailSent = ref(false);
 
 async function handleSubmit() {
-  isLoading.value = true
-  
-  // TODO: Implement password reset API call
-  // For now, simulate API call
-  await new Promise(resolve => setTimeout(resolve, 1500))
-  
-  emailSent.value = true
-  isLoading.value = false
+  isLoading.value = true;
+
+  // Simulate API call for password reset
+  await new Promise(resolve => setTimeout(resolve, 1500));
+
+  emailSent.value = true;
+  isLoading.value = false;
 }
 </script>
 
@@ -40,19 +39,9 @@ async function handleSubmit() {
             </div>
 
             <!-- Success Message -->
-            <v-alert
-              v-if="emailSent"
-              type="success"
-              variant="tonal"
-              prominent
-              class="mb-4"
-            >
-              <div class="text-subtitle-1 font-weight-medium">
-                Password reset link sent!
-              </div>
-              <div class="text-body-2">
-                Check your email for instructions
-              </div>
+            <v-alert v-if="emailSent" type="success" variant="tonal" prominent class="mb-4">
+              <div class="text-subtitle-1 font-weight-medium">Password reset link sent!</div>
+              <div class="text-body-2">Check your email for instructions</div>
             </v-alert>
 
             <!-- Form -->
@@ -78,10 +67,7 @@ async function handleSubmit() {
               </v-btn>
 
               <div class="text-center">
-                <router-link
-                  to="/"
-                  class="text-primary text-decoration-none"
-                >
+                <router-link to="/" class="text-primary text-decoration-none">
                   <v-icon size="small" class="mr-1">mdi-arrow-left</v-icon>
                   Back to login
                 </router-link>
@@ -97,6 +83,10 @@ async function handleSubmit() {
 <style scoped lang="scss">
 .auth-wrapper {
   min-height: 100vh;
-  background: linear-gradient(135deg, rgb(var(--v-theme-lightprimary)) 0%, rgb(var(--v-theme-lightsecondary)) 100%);
+  background: linear-gradient(
+    135deg,
+    rgb(var(--v-theme-lightprimary)) 0%,
+    rgb(var(--v-theme-lightsecondary)) 100%
+  );
 }
 </style>
