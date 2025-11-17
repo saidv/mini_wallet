@@ -1,0 +1,34 @@
+{
+  "name": "miniwallet",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "lint": "eslint src --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore"
+  },
+  "dependencies": {
+    "vue": "^3.5.20",
+    "vue-router": "^4.4.5",
+    "pinia": "^2.2.8",
+    "axios": "^1.7.9",
+    "vuetify": "^3.7.6",
+    "@mdi/font": "^7.4.47",
+    "laravel-echo": "^1.16.1",
+    "pusher-js": "^8.4.0-rc2"
+  },
+  "devDependencies": {
+    "@tsconfig/node22": "^22.0.0",
+    "@types/node": "^22.10.2",
+    "@vitejs/plugin-vue": "^5.2.1",
+    "@vue/tsconfig": "^0.7.0",
+    "typescript": "^5.7.3",
+    "vite": "^6.0.7",
+    "vue-tsc": "^2.2.0",
+    "eslint": "^9.18.0",
+    "vite-plugin-vuetify": "^2.0.4",
+    "sass": "^1.83.4"
+  }
+}
