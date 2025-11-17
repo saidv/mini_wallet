@@ -5,7 +5,7 @@ Welcome to MiniWallet! This is a simple, modern wallet app that lets you transfe
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 ### Backend
 - **Framework**: Laravel 11.x
@@ -42,7 +42,7 @@ Welcome to MiniWallet! This is a simple, modern wallet app that lets you transfe
 > The included `.env.example` file is already pre-configured with all the necessary settings for fast testing and demo purposes. You can use it as-is to get started quickly, or update secrets, database credentials, and Pusher keys!
 
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 
@@ -110,7 +110,7 @@ If you have PHP, Composer, MySQL, Nginx installed:
 
 ---
 
-## 🗂️ Project Structure
+## Project Structure
 ```
 MiniWallet/
 ├── backend/      # Laravel API & business logic
@@ -145,7 +145,7 @@ MiniWallet/
 
 ---
 
-## 🧠 How the Backend Works
+## How the Backend Works
 
 MiniWallet is designed for safety, speed, and transparency. Here’s how:
 
@@ -156,14 +156,14 @@ MiniWallet is designed for safety, speed, and transparency. Here’s how:
 
 ---
 
-## 💡 Why This Architecture?
+## Why This Architecture?
 - **Safety First**: Atomic transactions and balance snapshots mean your money is always safe and traceable.
 - **Real-Time**: Outbox and queue jobs make sure you see updates instantly, with no missed events.
 - **Scalable**: The system is ready for more users, more transactions, and future features.
 
 ---
 
-## 🙌 Get Started
+## Get Started
 Try it out, send some money, and watch your balance update in real time.
 - [x] User authentication (registration, login, logout) with Sanctum
 - [x] Money transfer with commission calculation (1.5% rounded up)
@@ -173,15 +173,6 @@ Try it out, send some money, and watch your balance update in real time.
 - [x] Dashboard with statistics
 - [x] Responsive UI with Vuetify 3
 
-### **Professional Architecture**
-
-| Component | Implementation | Files |
-|-----------|---------------|-------|
-| **Repository Pattern** | ✅ Complete | `UserRepository`, `TransactionRepository` + Interfaces |
-| **Service Layer** | ✅ Complete | `AuthService`, `TransferService` |
-| **FormRequests** | ✅ Complete | `TransferRequest`, `ValidateReceiverRequest`, `LoginRequest`, `RegisterRequest` |
-| **Thin Controllers** | ✅ Complete | `TransactionController`, `AuthController` |
-| **Dependency Injection** | ✅ Complete | All repositories bound in `AppServiceProvider` |
 
 **Architecture Highlights:**
 ```
@@ -197,16 +188,6 @@ Models (Eloquent)
 ```
 
 ### **Async Processing & Queue Workers**
-**Implemented Outbox Pattern with Queue Workers:**
-
-| Component | Status | Description |
-|-----------|--------|-------------|
-| **Outbox Pattern** | ✅ Complete | Transaction events stored in `transaction_outbox` table |
-| **Queue Jobs** | ✅ Complete | `ProcessTransactionOutbox` job with retry logic |
-| **Supervisor** | ✅ Complete | Manages 2 Laravel queue worker processes |
-| **Docker Integration** | ✅ Complete | Dedicated `queue-worker` service + backend supervisor |
-| **Retry Mechanism** | ✅ Complete | 5 attempts with exponential backoff |
-| **Event Broadcasting** | ✅ Complete | Pusher integration after DB commit |
 
 **Queue Worker Architecture:**
 ```
@@ -224,7 +205,7 @@ Transfer → Create Outbox Entry → DB Commit
 ```
 
 
-### 🎯 **Current State: Production-Ready MVP**
+### **Current State: Production-Ready MVP**
 
 **What's Working:**
 - ✅ Full money transfer flow with atomic transactions
@@ -236,19 +217,9 @@ Transfer → Create Outbox Entry → DB Commit
 - ✅ Professional Laravel architecture
 - ✅ Dockerized deployment
 
-**What's Next ( Enhancements):**
-- [ ] Add Laravel Horizon for visual queue monitoring
-- [ ] Implement balance reconciliation job
-- [ ] Add Prometheus metrics for monitoring
-- [ ] Implement dead letter queue for permanently failed jobs
-- [ ] Add Slack/email alerts for failed jobs
-- [ ] Performance optimization with Redis caching
-- [ ] Add comprehensive feature tests for queue workers
-- [ ] Transaction history pagination
-
 ---
 
-## 🏗️ Architecture
+## Architecture
 
 ### System Design Pattern: **Transactional Outbox**
 
@@ -284,7 +255,7 @@ sequenceDiagram
 ```
 ---
 
-## ⚙️ Queue Workers & Async Processing
+## Queue Workers & Async Processing
 
 ### Why Queue Workers?
 
@@ -377,7 +348,7 @@ docker exec miniwallet_backend php artisan queue:retry all
 ---
 
 
-## 📡 API Documentation
+## API Documentation
 
 ### Authentication
 

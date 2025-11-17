@@ -1,4 +1,4 @@
-# 💰 Mini Wallet - Backend API
+# Mini Wallet - Backend API
 
 A production-grade wallet API built with Laravel 11, implementing secure money transfers with atomic transactions, commission calculations, and real-time updates.
 
@@ -87,31 +87,31 @@ app/
 
 ## ✨ Key Features
 
-### 🔒 Security
+### Security
 - **Sanctum Authentication** - Token-based API authentication
 - **Email Validation** - Secure receiver validation without exposing user list
 - **Idempotency Keys** - Prevent duplicate transactions
 - **Row-Level Locking** - Prevents race conditions
 
-### 💸 Money Transfer
+### Money Transfer
 - **Atomic Transactions** - All-or-nothing guarantees
 - **Commission Calculation** - 1.5% fee automatically calculated
 - **Deterministic Locking** - Deadlock prevention with ordered locks
 - **Balance Validation** - Ensures sufficient funds before transfer
 
-### 📊 Data Integrity
+### Data Integrity
 - **Balance Snapshots** - Historical balance tracking
 - **Transaction Outbox** - Reliable event delivery pattern
 - **Append-Only Ledger** - Immutable transaction history
 - **Integer Arithmetic** - All money stored as cents (no floats)
 
-### 🚀 Performance
+### Performance
 - **Repository Pattern** - Optimized and reusable queries
 - **Eager Loading** - Prevents N+1 queries
 - **Pagination** - Cursor-based for large datasets
 - **Database Indexing** - Optimized query performance
 
-## 🔑 API Endpoints
+## API Endpoints
 
 ### Authentication
 ```http
@@ -135,7 +135,7 @@ GET    /api/transactions/{uuid}               # Get single transaction
 GET    /api/balance              # Get current balance
 ```
 
-## 💰 Money Transfer Flow
+## Money Transfer Flow
 
 ```
 1. Client → POST /api/transactions/validate-receiver
@@ -157,7 +157,7 @@ GET    /api/balance              # Get current balance
 4. Response ← Success with new balances
 ```
 
-## 🧪 Testing
+## Testing
 
 ```bash
 # Run all tests
@@ -178,7 +178,7 @@ php artisan test --filter=TransactionTest
 - **Sanctum** - API authentication
 - **Docker** - Containerization
 
-## 📝 Business Rules
+## Business Rules
 
 ### Commission Calculation
 ```php
@@ -198,7 +198,7 @@ Total Debited = Amount + Commission
 - Automatic retry on deadlock (max 3 attempts)
 - Exponential backoff between retries
 
-## 🔐 Security Features
+## Security Features
 
 ### Authentication
 - Token-based authentication with Laravel Sanctum
@@ -216,7 +216,7 @@ Total Debited = Amount + Commission
 - Pessimistic locking with row-level locks
 - Atomic database transactions
 
-## 📊 Database Schema
+## Database Schema
 
 ### Users Table
 ```sql
@@ -255,7 +255,7 @@ transaction_uuid  UUID → transactions.uuid
 created_at        TIMESTAMP
 ```
 
-## 🚀 Deployment
+## Deployment
 
 ### Docker
 ```bash
@@ -272,7 +272,7 @@ docker-compose exec backend php artisan migrate --seed
 - [ ] Configure log rotation
 - [ ] Set up monitoring (Sentry, New Relic)
 
-## 📖 Development
+## Development
 
 ### Setup
 ```bash
@@ -294,7 +294,7 @@ php artisan migrate:fresh   # Fresh database
 php artisan db:seed         # Seed test data
 ```
 
-## 🏆 Best Practices Implemented
+## Best Practices Implemented
 
 ✅ **SOLID Principles** - Single responsibility, dependency injection  
 ✅ **Repository Pattern** - Data access abstraction  
@@ -305,13 +305,11 @@ php artisan db:seed         # Seed test data
 ✅ **Event Sourcing** - Outbox pattern for reliability  
 ✅ **Integer Money** - Precision in financial calculations  
 
-## 📚 Resources
+## Resources
 
 - [Laravel Documentation](https://laravel.com/docs)
 - [Repository Pattern](https://martinfowler.com/eaaCatalog/repository.html)
 - [Transactional Outbox Pattern](https://microservices.io/patterns/data/transactional-outbox.html)
 - [Idempotency Keys](https://stripe.com/docs/api/idempotent_requests)
 
-## 📄 License
-
-MIT License
+## License
