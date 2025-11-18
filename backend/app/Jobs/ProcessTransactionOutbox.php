@@ -145,9 +145,21 @@ class ProcessTransactionOutbox implements ShouldQueue
                 'broadcast_connection' => config('broadcasting.default'),
                 'payload' => $event_payload,
             ]);
-            \App\Events\MoneyReceived::dispatch($event_payload);
 
-            // Mark as processed
+            try {
+                \App\Events\MoneyReceived::dispatch($event_payload);
+                Log::info('Event broadcasted successfully');
+            } catch (\Exception $broadcast_exception) {
+                Log::warning('Event broadcasting failed, but transaction was successful', [
+                    'outbox_id' => $this->outboxId,
+                    'error' => $broadcast_exception->getMessage(),
+                    'event_type' => $outbox->event_type,
+                ]);
+                // Continue processing - the transaction succeeded, broadcasting failure is logged but not fatal
+            }
+
+            // Mark as processed (delivered) regardless of broadcast success
+            // The transaction integrity is maintained, real-time updates are a nice-to-have
             $outbox->update([
                 'status' => 'delivered',
                 'delivered_at' => now(),
@@ -180,6 +192,7 @@ class ProcessTransactionOutbox implements ShouldQueue
      * Validate the outbox payload structure
      *
      * @param  array  $payload  Payload array to validate
+     * @return bool
      */
     protected function validatePayload(array $payload): bool
     {
@@ -212,6 +225,7 @@ class ProcessTransactionOutbox implements ShouldQueue
      *
      * @param  TransactionOutbox  $outbox  Outbox entry instance
      * @param  string  $reason  Failure reason
+     * @return void
      */
     protected function markAsFailed(TransactionOutbox $outbox, string $reason): void
     {
@@ -234,6 +248,7 @@ class ProcessTransactionOutbox implements ShouldQueue
      * Marks the outbox entry as permanently failed.
      *
      * @param  \Throwable  $exception  Exception that caused the failure
+     * @return void
      */
     public function failed(\Throwable $exception): void
     {
