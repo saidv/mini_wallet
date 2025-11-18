@@ -3,12 +3,16 @@
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\TransactionController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Broadcast;
 
 /*
 |--------------------------------------------------------------------------
 | API Routes
 |--------------------------------------------------------------------------
 */
+
+// Broadcasting auth routes (must be before other middleware)
+Broadcast::routes(['middleware' => ['auth:sanctum']]);
 
 // Public routes (no authentication required)
 Route::prefix('auth')->group(function () {

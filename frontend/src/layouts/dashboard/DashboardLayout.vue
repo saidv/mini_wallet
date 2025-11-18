@@ -53,7 +53,7 @@ async function handleLogout() {
 // Subscribe to Pusher on mount
 onMounted(async () => {
   subscribeToUserChannel((event: MoneyReceivedEvent) => {
-    console.log('💰 Money received event:', event);
+    console.log('Money received event:', event);
 
     if (event.new_balance !== undefined) {
       authStore.user!.balance = event.new_balance;
@@ -91,7 +91,7 @@ const startPollingForUpdates = () => {
         if (newBalance > oldBalance) {
           const difference = newBalance - oldBalance;
           success(
-            'Money Received! 💰',
+            'Money Received!',
             `You received $${(difference / 100).toFixed(2)}`
           );
         }
