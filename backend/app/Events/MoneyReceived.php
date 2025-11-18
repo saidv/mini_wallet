@@ -29,6 +29,7 @@ class MoneyReceived implements ShouldBroadcast
      */
     public function __construct(array $payload)
     {
+        \Illuminate\Support\Facades\Log::info('MoneyReceived event constructed with payload:', $payload);
         $this->transaction_uuid = $payload['transaction_uuid'];
         $this->amount = $payload['amount'];
         $this->new_balance = $payload['new_balance'];

@@ -23,6 +23,12 @@ class TransferService
      */
     private const COMMISSION_RATE = 0.015;
 
+    /**
+     * Construct a new instance of TransferService.
+     *
+     * @param UserRepositoryInterface $userRepository
+     * @param TransactionRepositoryInterface $transactionRepository
+     */
     public function __construct(
         private UserRepositoryInterface $userRepository,
         private TransactionRepositoryInterface $transactionRepository
@@ -43,7 +49,6 @@ class TransferService
         string $idempotency_key,
         array $metadata = []
     ): Transaction {
-        // Input validation
         $this->validateTransferInputs($sender_id, $receiver_id, $amount);
 
         // Calculate commission (rounded UP to prevent micro-losses)
@@ -66,9 +71,6 @@ class TransferService
                     $idempotency_key,
                     $metadata
                 ) {
-                    // CRITICAL FIX: Check idempotency INSIDE transaction with row lock
-                    // This prevents race condition where two concurrent requests
-                    // both pass the check before either creates the transaction
                     $existing_transaction = Transaction::where('idempotency_key', $idempotency_key)
                         ->lockForUpdate()
                         ->first();
@@ -118,9 +120,6 @@ class TransferService
                         'metadata' => $metadata,
                     ]);
 
-                    // CRITICAL FIX: Create snapshots AFTER balance updates
-                    // This ensures snapshots reflect actual new balances
-                    // and are only created if transaction commits successfully
                     BalanceSnapshot::create([
                         'user_id' => $sender_id,
                         'balance' => $sender->balance,

@@ -70,7 +70,7 @@ class ProcessTransactionOutbox implements ShouldQueue
     public function __construct(int $outboxId)
     {
         $this->outboxId = $outboxId;
-        $this->onQueue('events'); // High-priority queue for event broadcasting
+        $this->onQueue('events');
     }
 
     /**
@@ -89,7 +89,6 @@ class ProcessTransactionOutbox implements ShouldQueue
         Log::info('Processing outbox entry', ['outbox_id' => $this->outboxId]);
 
         try {
-            // Load the outbox entry with lock to prevent duplicate processing
             $outbox = TransactionOutbox::lockForUpdate()->find($this->outboxId);
 
             if (! $outbox) {
@@ -105,7 +104,6 @@ class ProcessTransactionOutbox implements ShouldQueue
                 return;
             }
 
-            // Validate payload structure
             $payload = $outbox->payload;
             if (is_string($payload)) {
                 $payload = json_decode($payload, true);
@@ -121,7 +119,6 @@ class ProcessTransactionOutbox implements ShouldQueue
                 return;
             }
 
-            // Load sender for name (needed for receiver notification)
             $sender = \App\Models\User::find($payload['sender_id']);
 
             if (! $sender) {
@@ -130,7 +127,6 @@ class ProcessTransactionOutbox implements ShouldQueue
 
             $amount_formatted = number_format($payload['amount'] / 100, 2);
 
-            // Prepare event data for receiver only (they're the ones who need notification)
             $event_payload = [
                 'transaction_uuid' => $payload['transaction_uuid'],
                 'amount' => $payload['amount'],
@@ -140,12 +136,11 @@ class ProcessTransactionOutbox implements ShouldQueue
                     'name' => $sender->name,
                     'email' => $sender->email,
                 ],
-                'receiver_id' => $payload['receiver_id'], // Add receiver_id to payload
+                'receiver_id' => $payload['receiver_id'],
                 'message' => "You received \${$amount_formatted} from {$sender->name}",
                 'timestamp' => now()->toIso8601String(),
             ];
 
-            // Dispatch the MoneyReceived event
             Log::info('Broadcasting MoneyReceived event', [
                 'broadcast_connection' => config('broadcasting.default'),
                 'payload' => $event_payload,
@@ -188,7 +183,6 @@ class ProcessTransactionOutbox implements ShouldQueue
      */
     protected function validatePayload(array $payload): bool
     {
-        // Required fields for money.transferred event
         $required_fields = [
             'transaction_uuid',
             'sender_id',
@@ -249,7 +243,6 @@ class ProcessTransactionOutbox implements ShouldQueue
             'attempts' => $this->attempts(),
         ]);
 
-        // Mark outbox entry as failed
         $outbox = TransactionOutbox::find($this->outboxId);
         if ($outbox) {
             $outbox->update([
@@ -258,8 +251,5 @@ class ProcessTransactionOutbox implements ShouldQueue
                 'error' => $exception->getMessage(),
             ]);
         }
-
-        // TODO: Send alert to monitoring system (Sentry, Bugsnag, etc.)
-        // TODO: Send notification to ops team for manual intervention
     }
 }

@@ -10,6 +10,11 @@ class AuthService
 {
     private const INITIAL_BALANCE = 0;
 
+    /**
+     * Construct a new instance of AuthService
+     *
+     * @param UserRepositoryInterface $userRepository
+     */
     public function __construct(
         private UserRepositoryInterface $userRepository
     ) {
