@@ -9,7 +9,6 @@ import Logo from '@/components/shared/Logo.vue';
 interface MoneyReceivedEvent {
   transaction_uuid: string;
   amount: number;
-  direction: 'in' | 'out';
   new_balance: number;
   message?: string;
   sender?: {
@@ -19,11 +18,13 @@ interface MoneyReceivedEvent {
 
 const router = useRouter();
 const authStore = useAuthStore();
-const { subscribeToUserChannel, disconnect } = usePusher();
+const { subscribeToUserChannel, disconnect, connected } = usePusher();
 const { success } = useToast();
 
 const drawer = ref(true);
 const rail = ref(false);
+const previousBalance = ref(authStore.user?.balance || 0);
+let pollingInterval: number | null = null;
 
 const menuItems = [
   {
@@ -50,28 +51,67 @@ async function handleLogout() {
 }
 
 // Subscribe to Pusher on mount
-onMounted(() => {
+onMounted(async () => {
   subscribeToUserChannel((event: MoneyReceivedEvent) => {
     console.log('💰 Money received event:', event);
 
-    // Update balance in store
     if (event.new_balance !== undefined) {
       authStore.user!.balance = event.new_balance;
     }
 
-    // Show success notification (only receivers get notifications)
     success(
-      'Money Received! 💰',
+      'Money Received!',
       event.message || `You received $${(event.amount / 100).toFixed(2)} from ${event.sender?.name}`
     );
 
-    // Trigger transaction list refresh
     window.dispatchEvent(new CustomEvent('transaction-updated'));
   });
+
+  // Fallback: Poll for updates every 30 seconds if WebSocket fails
+  setTimeout(() => {
+    startPollingForUpdates();
+  }, 5000);
 });
+
+const startPollingForUpdates = () => {
+  // Only start polling if we don't have a WebSocket connection
+  if (!connected.value && !pollingInterval) {
+    console.log('Starting polling for real-time updates (WebSocket fallback)');
+    
+    pollingInterval = setInterval(async () => {
+      try {
+        const oldBalance = previousBalance.value;
+        
+        // Check for balance updates
+        await authStore.fetchUser();
+        
+        const newBalance = authStore.user?.balance || 0;
+        
+        // If balance increased, show notification
+        if (newBalance > oldBalance) {
+          const difference = newBalance - oldBalance;
+          success(
+            'Money Received! 💰',
+            `You received $${(difference / 100).toFixed(2)}`
+          );
+        }
+        
+        previousBalance.value = newBalance;
+        
+        window.dispatchEvent(new CustomEvent('transaction-updated'));
+      } catch (error) {
+        console.error('Polling error:', error);
+      }
+    }, 30000);
+  }
+};
 
 onUnmounted(() => {
   disconnect();
+  if (pollingInterval) {
+    clearInterval(pollingInterval);
+    pollingInterval = null;
+  }
 });
 </script>
 
