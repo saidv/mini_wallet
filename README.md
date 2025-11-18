@@ -50,6 +50,13 @@ Welcome to MiniWallet! This is a simple, modern wallet app that lets you transfe
 - Node.js 18+ (for local frontend dev)
 - PHP 8.3+ (for local backend dev)
 
+### Clone the Project
+
+```bash
+git clone https://github.com/saidv/mini_wallet.git
+cd mini_wallet
+```
+
 ---
 
 ### Option 1: One-Step Setup (Recommended)
