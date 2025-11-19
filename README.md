@@ -8,7 +8,7 @@ Welcome to MiniWallet! This is a simple, modern wallet app that lets you transfe
 ## Tech Stack
 
 ### Backend
-- **Framework**: Laravel 11.x
+- **Framework**: Laravel 12.x
 - **Language**: PHP 8.3+
 - **Database**: MySQL 8.0
 - **Queue**: Redis
