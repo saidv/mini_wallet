@@ -8,8 +8,6 @@ services:
       - "8443:443"
     env_file:
       - backend/.env
-    volumes:
-      - ./backend:/var/www/html
     depends_on:
       db:
         condition: service_healthy
