@@ -132,14 +132,6 @@ setup_env_file() {
     log_info "Creating $ENV_FILE from $ENV_EXAMPLE..."
     cp "$ENV_EXAMPLE" "$ENV_FILE"
 
-    # Generate Laravel application key if PHP is available
-    if command -v php &> /dev/null && [ -f "${BACKEND_DIR}/artisan" ]; then
-        log_info "Generating Laravel application key..."
-        cd "$BACKEND_DIR"
-        php artisan key:generate --force --ansi || log_warning "Could not generate key (will run in container)"
-        cd ..
-    fi
-
     log_success ".env file created"
 }
 

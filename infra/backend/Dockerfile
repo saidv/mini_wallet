@@ -122,6 +122,13 @@ RUN if [ -f artisan ]; then \
         php artisan key:generate --ansi --no-interaction || true; \
     fi
 
+# Optimize Laravel for production if artisan exists
+RUN if [ -f artisan ]; then \
+        php artisan config:cache --no-interaction || true; \
+        php artisan route:cache --no-interaction || true; \
+        php artisan view:cache --no-interaction || true; \
+    fi
+
 # Healthcheck configuration
 HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
     CMD curl -f http://localhost/api/health || exit 1
