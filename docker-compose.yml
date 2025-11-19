@@ -83,8 +83,6 @@ services:
     command: php artisan queue:work redis --queue=events,default --sleep=3 --tries=5 --max-time=3600 --timeout=30
     env_file:
       - backend/.env
-    volumes:
-      - ./backend:/var/www/html
     depends_on:
       db:
         condition: service_healthy
